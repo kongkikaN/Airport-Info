@@ -1,6 +1,6 @@
 # Airport
 
-airport.inc.php is a php class to get airport data by IATA Code.
+airport.inc.php is a php class to get airport data by IATA or ICAO Code.
 This class uses the 'Airport info' API as described on https://rapidapi.com/Active-api/api/airport-info/endpoints
 
 

@@ -6,10 +6,10 @@
  */
 
 
- /**
-  * 
-  * Airport record
-  */
+/**
+ * 
+ * Airport record
+ */
 Class AirportRecord {
 
 	/**
@@ -146,8 +146,8 @@ Class AirportRecord {
 
 	}
 
-
 }
+
 
 /**
  * Airport class
@@ -160,7 +160,7 @@ Class Airport extends AirportRecord {
 	 * Debug mode
 	 * @var boolean debug mode
 	 */
-	var $debug = true;
+	var $debug = false;
 
 	/**
 	 * Debug log
@@ -278,19 +278,20 @@ Class Airport extends AirportRecord {
 
 	/**
 	 * Run service to get airport data
-	 * @param string $iata three letter airport IATA code
+	 * @param string $airport 3-letter IATA Code or 4-letter ICAO Code
 	 * @return boolean
 	 */
-	public function populateAirport($iata) {
-
-		// IATA Codes consist of 3-letter strings
-		if(mb_strlen($iata)!=3) {
-			$this->_logError(__FUNCTION__, "Invalid IATA code: ".$iata);
-			return false;
-		}
+	public function populateAirport($airport) {
 
 		// Build $url
-		$url = $this->url."?iata=".$iata;
+		if(mb_strlen($airport)==3) {
+			$url = $this->url."?iata=".$airport;
+		} elseif(mb_strlen($airport)==4) {
+			$url = $this->url."?icao=".$airport;
+		} else {
+			$this->_logError(__FUNCTION__, "Invalid airport code: ".$airport);
+			return false;
+		}
 
 		// Run Service
 		$rc = $this->_APICall($url);
@@ -301,6 +302,16 @@ Class Airport extends AirportRecord {
 
 		// $this->fillRecord();
 		$this->response = json_decode($this->response, true);
+		
+		// No airport found
+		if(isset($this->response['error'])) {
+			if(isset($this->response['error']['text']))
+				$desc = $this->response['error']['text'];
+			else
+				$desc = "airport [".$airport."] not found";
+			$this->_logError(__FUNCTION__, $desc);
+			return false;
+		}
 		$record = array(
 			$this->response['id'],
 			$this->response['iata'],
