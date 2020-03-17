@@ -24,5 +24,11 @@ $airport->populateAirport("LHR");
 var_dump($airport);
 
 ```
+
+## JSON formatted file of airports
+
+Now, the airports.json file is available thanks to [mwgg/Airports](https://github.com/mwgg/Airports)
+
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+
+This project goes under the [MIT](https://choosealicense.com/licenses/mit/) license
